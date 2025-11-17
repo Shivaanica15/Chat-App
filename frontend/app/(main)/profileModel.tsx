@@ -1,14 +1,31 @@
+import BackButton from "@/components/BackButton";
+import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { scale, verticalScale } from "@/utils/styling";
 import React from "react";
-import { StyleSheet, View, Text }  from "react-native";
+import { StyleSheet, View, Text, Platform }  from "react-native";
+import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 
 const ProfileModal = () => {
     return (
         <ScreenWrapper isModal={true}>
             <View style={styles.container}>
+                <Header
+                    title={"Update Profile"}
+                    leftIcon={
+                        Platform.OS == "android" && <BackButton color={colors.black} />
+                    }
+                    style={{ marginVertical: spacingY._15}}
+                    />
 
+                    {/* form */}
+
+                    <ScrollView contentContainerStyle={styles.form}>
+                        <View style={styles.avatarContainer}>
+                            <Avatar />
+                        </View>
+                    </ScrollView>
             </View>
         </ScreenWrapper>
     );

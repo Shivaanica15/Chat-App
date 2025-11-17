@@ -1,0 +1,40 @@
+import { colors, radius } from "@/constants/theme";
+import { AvatarProps } from "@/types";
+import { verticalScale } from "@/utils/styling";
+import React from "react";
+import {  StyleSheet, Text, View  } from "react-native";
+import { Image } from 'expo-image'
+
+const Avatar = ({ uri, size=40, style, isGroup = false}: AvatarProps) =>{
+    return(
+        <View
+        style={[
+            styles.Avatar,
+            { height: verticalScale(size), width: verticalScale(size)},
+            style,
+        ]}
+        >
+        <Image
+            style={{flex:1}}
+            source={uri}
+            contentFit="cover"
+            transition={100}
+            />
+        </View>
+    );
+};
+
+export default Avatar;
+
+const styles = StyleSheet.create({
+    Avatar:{
+        alignSelf: "center",
+        backgroundColor: colors.neutral200,
+        height: verticalScale(47),
+        width: verticalScale(47),
+        borderRadius: radius.full,
+        borderWidth: 1,
+        borderColor: colors.neutral100,
+        overflow: "hidden"
+    },
+});
