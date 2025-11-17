@@ -9,10 +9,13 @@ import { View } from 'react-native-reanimated/lib/typescript/Animated';
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import * as Icons from "phosphor-react-native";
+import { router, useRouter } from 'expo-router';
 
 const Home = () => {
 
     const { user:currentUser, signOut } = useAuth();
+    const router = useRouter();
+
     // console.log("user: ", user);
 
     // useEffect(() => {
@@ -49,7 +52,7 @@ const Home = () => {
                             🔥
                     </View>
 
-                    <TouchableOpacity style={styles.settingIcon} onPress={()=> {}}>
+                    <TouchableOpacity style={styles.settingIcon} onPress={()=> router.push("/(main)/profileModel")}>
                         <Icons.GearSix color={colors.white} weight='fill' size={verticalScale(22)}/>
                     </TouchableOpacity>
                 </View>
