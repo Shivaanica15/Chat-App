@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Children, createContext, ReactNode, useContext, useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from 'jwt-decode'
+import { connectSocket, disconnectSocket } from "@/socket/socket";
 
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -41,7 +42,8 @@ export const AuthProvider = ({children}: {children: ReactNode})=>{
 
             // user is logged in
 
-            setToken(storedToken);
+            setToken(storedToken);connectSocket
+            await 
             setUser(decoded.user);
 
             gotoHomePage();
@@ -87,12 +89,14 @@ const gotoWelcomePage = () => {
     const signIn = async (email: string, password: string) =>{
         const response = await login(email, password);
         await updateToken(response.token);
+        await connectSocket();
         router.replace("/(main)/home");
     };
 
     const signUp = async (email: string, password: string, name: string, avatar?: string ) => {
         const response = await register(email, password, name, avatar);
         await updateToken(response.token);
+        await connectSocket();
         router.replace("/(main)/home");
     };
 
@@ -100,6 +104,7 @@ const gotoWelcomePage = () => {
         setToken(null);
         setUser(null);
         await AsyncStorage.removeItem("token");
+        disconnectSocket();
         router.replace("/(auth)/welcome");
     }
 
