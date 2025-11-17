@@ -5,7 +5,7 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/contexts/authContext';
 import Button from '@/components/Button';
 import { testSocket } from '@/socket/socketEvents';
-import { View } from 'react-native-reanimated/lib/typescript/Animated';
+import { View } from "react-native";
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import * as Icons from "phosphor-react-native";
