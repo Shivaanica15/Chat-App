@@ -1,3 +1,4 @@
+import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { scale, verticalScale } from "@/utils/styling";
 import React from "react";
@@ -5,9 +6,11 @@ import { StyleSheet, View, Text }  from "react-native";
 
 const ProfileModal = () => {
     return (
-        <View>
-            <Text>ProfileModel</Text>
-        </View>
+        <ScreenWrapper isModal={true}>
+            <View style={styles.container}>
+
+            </View>
+        </ScreenWrapper>
     );
 };
 
