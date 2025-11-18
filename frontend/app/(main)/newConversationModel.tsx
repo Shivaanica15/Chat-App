@@ -1,5 +1,5 @@
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import ScreenWrapper from '@/components/ScreenWrapper';
@@ -12,6 +12,7 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/contexts/authContext';
 import Button from '@/components/Button';
 import { verticalScale } from '@/utils/styling';
+import { getContacts } from '@/socket/socketEvents';
 
 const newConversationModel = () =>{
 
@@ -19,10 +20,28 @@ const newConversationModel = () =>{
     const isGroupMode = isGroup =="1";
     const router = useRouter();
     const [groupAvatar, setGroupAvatar] = useState<{uri: string} | null> (null);
+    const [contacts, setContacts] = useState([]);
     const [groupName, setGroupName] = useState("");
     const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
 
     const {user: currentUser} = useAuth();
+
+    useEffect(()=>{
+        getContacts(processGetContacts);
+        getContacts(null);
+
+
+        return () => {
+            getContacts(processGetContacts, true);
+        }
+    },[]);
+
+    const processGetContacts = (res:any) => {
+        console.log("got contacts: ",res);
+        if (res.success){
+            setContacts(res.data);
+        }
+    };
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -71,59 +90,59 @@ const newConversationModel = () =>{
 
         }
 
-    const contacts =[
-        {
-            id: "1",
-            name: "Liam Carter",
-            avatar: "https://i.pravatar.cc/150?img=11",
-        },
-        {
-            id: "2",
-            name: "Emma Davis",
-            avatar: "https://i.pravatar.cc/150?img=12",
-        },
-        {
-            id: "3",
-            name: "Noah Wilson",
-            avatar: "https://i.pravatar.cc/150?img=13",
-        },
-        {
-            id: "4",
-            name: "Betta",
-            avatar: "https://i.pravatar.cc/150?img=14",
-        },
-        {
-            id: "5",
-            name: "Gamma",
-            avatar: "https://i.pravatar.cc/150?img=15",
-        },
-        {
-            id: "6",
-            name: "Hema",
-            avatar: "https://i.pravatar.cc/150?img=16",
-        },
-        {
-            id: "7",
-            name: "Isa",
-            avatar: "https://i.pravatar.cc/150?img=17",
-        },
-        {
-            id: "8",
-            name: "Rani",
-            avatar: "https://i.pravatar.cc/150?img=18",
-        },
-        {
-            id: "9",
-            name: "Raja",
-            avatar: "https://i.pravatar.cc/150?img=19",
-        },
-        {
-            id: "10",
-            name: "Kamala",
-            avatar: "https://i.pravatar.cc/150?img=20",
-        },
+    // const contacts =[
+    //     {
+    //         id: "1",
+    //         name: "Liam Carter",
+    //         avatar: "https://i.pravatar.cc/150?img=11",
+    //     },
+    //     {
+    //         id: "2",
+    //         name: "Emma Davis",
+    //         avatar: "https://i.pravatar.cc/150?img=12",
+    //     },
+    //     {
+    //         id: "3",
+    //         name: "Noah Wilson",
+    //         avatar: "https://i.pravatar.cc/150?img=13",
+    //     },
+    //     {
+    //         id: "4",
+    //         name: "Betta",
+    //         avatar: "https://i.pravatar.cc/150?img=14",
+    //     },
+    //     {
+    //         id: "5",
+    //         name: "Gamma",
+    //         avatar: "https://i.pravatar.cc/150?img=15",
+    //     },
+    //     {
+    //         id: "6",
+    //         name: "Hema",
+    //         avatar: "https://i.pravatar.cc/150?img=16",
+    //     },
+    //     {
+    //         id: "7",
+    //         name: "Isa",
+    //         avatar: "https://i.pravatar.cc/150?img=17",
+    //     },
+    //     {
+    //         id: "8",
+    //         name: "Rani",
+    //         avatar: "https://i.pravatar.cc/150?img=18",
+    //     },
+    //     {
+    //         id: "9",
+    //         name: "Raja",
+    //         avatar: "https://i.pravatar.cc/150?img=19",
+    //     },
+    //     {
+    //         id: "10",
+    //         name: "Kamala",
+    //         avatar: "https://i.pravatar.cc/150?img=20",
+    //     },
         
-    ]
+    // ]
 
     return(
         <ScreenWrapper isModal={true}>
