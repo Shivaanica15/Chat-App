@@ -51,4 +51,21 @@ export const getContacts = (payload: any, off: boolean = false)=>{
     }
 };
 
+export const newConversation = (payload: any, off: boolean = false)=>{
+    const socket = getSocket();
+    if(!socket){
+        console.log("Socket is not connected");
+        return;
+    }
+
+    if(off){
+        // turn off listing to this event
+        socket.off("newConversation", payload); // payload is the callback
+    }else if(typeof payload == 'function'){
+        socket.on("newConversation", payload); // payload as callback for this event
+    }else{
+        socket.emit("newConversation", payload); //sending payload as data
+    }
+};
+
 
