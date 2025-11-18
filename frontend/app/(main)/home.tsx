@@ -11,6 +11,8 @@ import { verticalScale } from '@/utils/styling';
 import * as Icons from "phosphor-react-native";
 import { router, useRouter } from 'expo-router';
 import { ScrollView } from "react-native";
+import ConversationItem from '@/components/ConversationItem';
+import Loading from '@/components/Loading';
 
 
 const Home = () => {
@@ -19,6 +21,8 @@ const Home = () => {
     const router = useRouter();
 
     const [selectedTab, setSelectedTab] = useState(0);
+
+    const [loading, setLoading] = useState(false);
 
 
 
@@ -99,7 +103,7 @@ const Home = () => {
         const aDate = a?.lastMessage?.createdAt || a.createdAt;
         const bDate = b?.lastMessage?.createdAt || b.createdAt;
         return new Date(bDate).getTime() - new Date(aDate).getTime();
-    })
+    });
 
     let groupConversations = conversations
     .filter((item: any)=> item.type == "group")
@@ -107,7 +111,9 @@ const Home = () => {
         const aDate = a?.lastMessage?.createdAt || a.createdAt;
         const bDate = b?.lastMessage?.createdAt || b.createdAt;
         return new Date(bDate).getTime() - new Date(aDate).getTime();
-    })
+    });
+
+   
 
     return (
         <ScreenWrapper showPattern={true} bgOpacity={0.4}>
@@ -160,16 +166,65 @@ const Home = () => {
                                     {
                                         selectedTab == 0 && directConversations.map((item: any, index) =>{
                                             return(
-                                                <ConversationItem />
+                                                <ConversationItem
+                                                item={item}
+                                                key={index}
+                                                router={router}
+                                                showDriver={directConversations.length != index + 1} />
+                                            )
+                                        })
+                                    }
+                                    {
+                                        selectedTab == 1 && 
+                                        groupConversations.map((item: any, index) =>{
+                                            return(
+                                                <ConversationItem
+                                                item={item}
+                                                key={index}
+                                                router={router}
+                                                showDriver={directConversations.length != index + 1} />
                                             )
                                         })
                                     }
 
                                 </View>
+
+                                {
+                                    !loading && selectedTab == 0 && directConversations. length== 0 &&(
+                                        <Typo style={{textAlign: 'center'}}>
+                                            You don't have any messages
+                                        </Typo>
+                                    )
+                                }
+
+                                {
+                                    !loading && selectedTab == 1 && groupConversations. length== 0 &&(
+                                        <Typo style={{textAlign: 'center'}}>
+                                            You haven't joined any groups yet
+                                        </Typo>
+                                    )
+                                }
+
+                                {
+                                    loading && <Loading/>
+                                }
                             </ScrollView>
                     </View>
 
             </View>
+
+            <Button
+                style={styles.floatingButton}
+                onPress={() => router.push({
+                    pathname: "/(main)/newConversationModel",
+                    params: {isGroup: selectedTab}
+                })}>
+
+                    <Icons.Plus
+                        color={colors.black}
+                        weight="bold"
+                        size={verticalScale(24)}/>
+                </Button>
         </ScreenWrapper>
     );
 }
