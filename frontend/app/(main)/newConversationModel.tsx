@@ -28,6 +28,7 @@ const newConversationModel = () =>{
 
     useEffect(()=>{
         getContacts(processGetContacts);
+        newConversation(processNewConversation);
         getContacts(null);
 
 
