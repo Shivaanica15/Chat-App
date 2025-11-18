@@ -27,6 +27,7 @@ export function registerChatEvents (io: SocketIOServer, socket: Socket){
                 success: true,
                 msg: {...existingConversation},
             });
+            return;
 
                 }
             }

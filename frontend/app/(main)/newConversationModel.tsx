@@ -12,7 +12,9 @@ import Typo from '@/components/Typo';
 import { useAuth } from '@/contexts/authContext';
 import Button from '@/components/Button';
 import { verticalScale } from '@/utils/styling';
-import { getContacts } from '@/socket/socketEvents';
+import { getContacts, newConversation } from "@/socket/socketEvents";
+import { uploadFileToCloudinary } from '@/services/imageService';
+
 
 const newConversationModel = () =>{
 
@@ -34,6 +36,7 @@ const newConversationModel = () =>{
 
         return () => {
             getContacts(processGetContacts, true);
+            newConversation(processNewConversation, true)
         }
     },[]);
 
@@ -41,6 +44,27 @@ const newConversationModel = () =>{
         console.log("got contacts: ",res);
         if (res.success){
             setContacts(res.data);
+        }
+    };
+
+     const processNewConversation = (res:any) => {
+        // console.log("new conversation result: ",res.data.participants);
+        setIsLoading(false);
+        if(res.success){
+            router.back();
+            router.push({
+                pathname: "/(main)/conversation",
+                params: {
+                    id: res.data._id,
+                    name: res.data.name,
+                    avatar: res.data.avatar,
+                    type: res.data.type,
+                    participants: JSON.stringify(res.data.participants),
+                }
+            })
+        }else{
+            console.log("Error fetching/creating conversation: ", res.msg);
+            Alert.alert("Error", res.msg);
         }
     };
 
@@ -79,7 +103,10 @@ const newConversationModel = () =>{
             if(isGroupMode){
                 toggleParticipant(user);
             }else{
-                // todo: start new conversation
+                newConversation({
+                    type: "direct",
+                    participants: [currentUser.id, user.id],
+                })
             }
         }
 
@@ -87,9 +114,33 @@ const newConversationModel = () =>{
 
             if(!groupName.trim() || !currentUser || selectedParticipants.length<2) return;
 
-            // todo: create group
+            setIsLoading(true);
 
-        }
+            try{
+
+                let avatar = null;
+                if(groupAvatar){
+                    const uploadResult = await uploadFileToCloudinary(
+                        groupAvatar, "group-avatars"
+                    );
+                    if(uploadResult.success) avatar = uploadResult.data;
+                }
+
+                newConversation({
+                    type: 'group',
+                    participants: [currentUser.id, ...selectedParticipants],
+                    name: groupName,
+                    avatar,
+                });
+
+            }catch(error: any){
+                console.log("Error creating group: ", error);
+                Alert.alert("Error", error.message);
+            }finally{
+                setIsLoading(false);
+            }
+
+        };
 
     // const contacts =[
     //     {
