@@ -63,6 +63,9 @@ const ConversationItem = ({item, showDriver, router}: any) =>{
             <Typo size={15}>{getLastMessageData()}</Typo>
         )}
     </TouchableOpacity>
+
+        {showDriver && <View style={styles.divider}/>}
+
 </View>
 
     );
