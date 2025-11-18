@@ -4,6 +4,7 @@ import { verticalScale } from "@/utils/styling";
 import React from "react";
 import {  StyleSheet, Text, View  } from "react-native";
 import { Image } from 'expo-image'
+import { getAvatarPath } from "@/services/imageService";
 
 const Avatar = ({ uri, size=40, style, isGroup = false}: AvatarProps) =>{
     return(
@@ -16,7 +17,7 @@ const Avatar = ({ uri, size=40, style, isGroup = false}: AvatarProps) =>{
         >
         <Image
             style={{flex:1}}
-            source={uri}
+            source={getAvatarPath(uri, isGroup)}
             contentFit="cover"
             transition={100}
             />
