@@ -91,7 +91,23 @@ const Home = () => {
                 createdAt: "2025-06-23T09:30:00Z",
             },
         },
-    ]
+    ];
+
+    let directConversations = conversations
+    .filter((item: any)=> item.type == "direct")
+    .sort((a: any, b: any) => {
+        const aDate = a?.lastMessage?.createdAt || a.createdAt;
+        const bDate = b?.lastMessage?.createdAt || b.createdAt;
+        return new Date(bDate).getTime() - new Date(aDate).getTime();
+    })
+
+    let groupConversations = conversations
+    .filter((item: any)=> item.type == "group")
+    .sort((a: any, b: any) => {
+        const aDate = a?.lastMessage?.createdAt || a.createdAt;
+        const bDate = b?.lastMessage?.createdAt || b.createdAt;
+        return new Date(bDate).getTime() - new Date(aDate).getTime();
+    })
 
     return (
         <ScreenWrapper showPattern={true} bgOpacity={0.4}>
@@ -142,9 +158,11 @@ const Home = () => {
 
                                 <View style={styles.conversationList}>
                                     {
-                                        selectedTab == 0 && (
-
-                                        )
+                                        selectedTab == 0 && directConversations.map((item: any, index) =>{
+                                            return(
+                                                <ConversationItem />
+                                            )
+                                        })
                                     }
 
                                 </View>
