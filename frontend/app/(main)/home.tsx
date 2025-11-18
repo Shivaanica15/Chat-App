@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
 import Typo from '@/components/Typo';
 import { useAuth } from '@/contexts/authContext';
@@ -18,7 +18,9 @@ const Home = () => {
     const { user:currentUser, signOut } = useAuth();
     const router = useRouter();
 
-    
+    const [selectedTab, setSelectedTab] = useState(0);
+
+
 
     // console.log("user: ", user);
 
@@ -39,6 +41,58 @@ const Home = () => {
     //     await signOut();
     // }
 
+    const handleLogout = async () => {
+        await signOut();
+    }
+
+    const conversations = [
+        {
+            name: "Alice",
+            type:"direct",
+            lastMessage: {
+                senderName: "Alice",
+                content: "Hey! Are we still on for tonight?",
+                createdAt: "2025-06-22T18:45:00Z",
+            },
+        },
+        {
+            name: "Project Team",
+            type:"group",
+            lastMessage: {
+                senderName: "Sarah",
+                content: "Meeting rescheduled to 3pm tomorrow",
+                createdAt: "2025-06-21T14:10:00Z",
+            },
+        },
+        {
+            name: "Charlie",
+            type:"direct",
+            lastMessage: {
+                senderName: "Charlie",
+                content: "Thanks!",
+                createdAt: "2025-06-22T11:15:00Z",
+            },
+        },
+        {
+            name: "Family Group",
+            type:"group",
+            lastMessage: {
+                senderName: "Mom",
+                content: "Happy Birthday!",
+                createdAt: "2025-06-20T07:50:00Z",
+            },
+        },
+        {
+            name: "Bob",
+            type:"direct",
+            lastMessage: {
+                senderName: "Bob",
+                content: "Cab you send te files?",
+                createdAt: "2025-06-23T09:30:00Z",
+            },
+        },
+    ]
+
     return (
         <ScreenWrapper showPattern={true} bgOpacity={0.4}>
             <View style={styles.container}>
@@ -57,7 +111,8 @@ const Home = () => {
                                     
                     </View>
 
-                    <TouchableOpacity style={styles.settingIcon} onPress={()=> router.push("/(main)/profileModel")}>
+                    <TouchableOpacity  style={styles.settingIcon} 
+                    onPress={()=> router.push("/(main)/profileModel")}>
                         <Icons.GearSix color={colors.white} weight='fill' size={verticalScale(22)}/>
                     </TouchableOpacity>
                 </View>
@@ -67,10 +122,31 @@ const Home = () => {
                             contentContainerStyle={{paddingVertical: spacingY._20}}>
                                 <View style={styles.navBar}>
                                     <View style={styles.tabs}>
-                                        <TouchableOpacity style={styles.tabStyle}>
+                                        <TouchableOpacity 
+                                        onPressIn={() => setSelectedTab(0)} 
+                                        style={[styles.tabStyle, 
+                                        selectedTab==0 && 
+                                        styles.activeTabStyle]}>
                                             <Typo>Direct Messages</Typo>
                                         </TouchableOpacity>
+
+                                         <TouchableOpacity 
+                                        onPressIn={() => setSelectedTab(1)} 
+                                        style={[styles.tabStyle, 
+                                        selectedTab==1 && 
+                                        styles.activeTabStyle]}>
+                                            <Typo>Groups</Typo>
+                                        </TouchableOpacity>
                                     </View>
+                                </View>
+
+                                <View style={styles.conversationList}>
+                                    {
+                                        selectedTab == 0 && (
+
+                                        )
+                                    }
+
                                 </View>
                             </ScrollView>
                     </View>
