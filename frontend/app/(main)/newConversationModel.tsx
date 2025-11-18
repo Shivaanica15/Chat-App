@@ -2,6 +2,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { colors, radius, spacingX, spacingY } from '@/constants/theme';
+import ScreenWrapper from '@/components/ScreenWrapper';
+import Header from "@/components/Header";
+import BackButton from '@/components/BackButton';
 
 const newConversationModel = () =>{
 
@@ -64,9 +67,27 @@ const newConversationModel = () =>{
     ]
 
     return(
-        <View>
-            <Text>newConversationModel</Text>
-        </View>
+        <ScreenWrapper isModal={true}>
+            <View style={styles.container}>
+                <Header
+                    title={isGroupMode ? "New Group" : "Select User"}
+                    leftIcon={<BackButton color={colors.black} />}
+                />
+
+                {
+
+                    isGroupMode && (
+                        <View style={styles.groupInfoContainer}>
+                            <View style={styles.avatarContainer}>
+                                
+                            </View>
+
+                        </View>
+                    )
+                }
+            </View>
+        </ScreenWrapper>
+
     )
 }
 
