@@ -10,11 +10,15 @@ import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import * as Icons from "phosphor-react-native";
 import { router, useRouter } from 'expo-router';
+import { ScrollView } from "react-native";
+
 
 const Home = () => {
 
     const { user:currentUser, signOut } = useAuth();
     const router = useRouter();
+
+    
 
     // console.log("user: ", user);
 
@@ -46,10 +50,11 @@ const Home = () => {
                         textProps={{numberOfLines: 1}}
                         >
                              Welcome back,
-                             <Typo size={20} color={colors.white} fontWeight={"800"}>
-                                {currentUser?.name}</Typo>
-                             </Typo> {" "}
-                            🔥
+                             <Typo size={20} color={colors.white} fontWeight={"800"} >
+                                {" "} {currentUser?.name}{" "}</Typo>
+                                <Typo size={20}>🔥</Typo>
+                             </Typo>
+                                    
                     </View>
 
                     <TouchableOpacity style={styles.settingIcon} onPress={()=> router.push("/(main)/profileModel")}>
@@ -57,7 +62,18 @@ const Home = () => {
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.content}></View>
+                 <View style={styles.content}>
+                        <ScrollView showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{paddingVertical: spacingY._20}}>
+                                <View style={styles.navBar}>
+                                    <View style={styles.tabs}>
+                                        <TouchableOpacity style={styles.tabStyle}>
+                                            <Typo>Direct Messages</Typo>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </ScrollView>
+                    </View>
 
             </View>
         </ScreenWrapper>
