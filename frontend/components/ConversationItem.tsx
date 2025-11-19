@@ -4,11 +4,16 @@ import { colors, spacingX, spacingY } from '@/constants/theme'
 import Avatar from './Avatar'
 import Typo from './Typo';
 import moment from 'moment';
+import { ConversationProps } from '@/types';
 
 const ConversationItem = ({item, showDriver, router}: any) =>{
 
     
-    const openConversation = () =>{}
+    
+
+    const {user: currentUser} = useAuth();
+
+    // console.log("conversation item: ", item);
 
     const getLastMessageContent = () => {
         if(!lastMessage) return " Say hi ⭐ ";
@@ -16,8 +21,13 @@ const ConversationItem = ({item, showDriver, router}: any) =>{
         return lastMessage?.attachment ? "Image" : lastMessage.content;
     }
 
-    const lastMessage: any = item.lastMessage;
+    const lastMessage: ConversationProps = item.lastMessage;
     const isDirect =item.type =='direct';
+
+    let avatar = item.avatar;
+    const otherParticipant = isDirect? item.participants.find(p => p._id !=currentUser?.id):null;
+
+    if(isDirect && otherParticipant) avatar = otherParticipant?.avatar;
 
     const getLastMessageData = () =>{
         if(!lastMessage.createdAt) return null;
@@ -35,17 +45,31 @@ const ConversationItem = ({item, showDriver, router}: any) =>{
         
             return messageDate.format("MMM D, YYYY");
         
-    }
+    };
+
+    const openConversation = () =>{
+        router.push({
+            pathname: "/(main)/conversation",
+            params: {
+                id: item._id,
+                name: item.name,
+                avatar: item.avatar,
+                type: item.type,
+                participants: JSON.stringify(item.participants)
+            }
+        })
+    };
+
     return (
         <View>
     <TouchableOpacity style={styles.ConversationItem}>
         <View>
-            <Avatar uri={null} size={47} isGroup={item.type == "group"} />
+            <Avatar uri={avatar} size={47} isGroup={item.type == "group"} />
         </View>
 
         <View style={{ flex: 1 }}>
             <Typo size={17} fontWeight={"600"}>
-                {item?.name}
+                {isDirect? otherParticipant?.name : item?.name}
             </Typo>
 
             {/* 👇 Swapped: last message preview now comes here */}

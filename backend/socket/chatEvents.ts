@@ -5,6 +5,51 @@ import { error } from "console";
 
 export function registerChatEvents (io: SocketIOServer, socket: Socket){
 
+    socket.on("getConversations", async ()=>{
+        console.log('getConversations event');
+
+        try{
+            const userId = socket.data.userId;
+             if(!userId){
+                socket.emit("getConversations", {
+                success: false,
+                msg: "Unauthorized",
+            });
+            return;
+            }
+
+            // find all conversations where user is a participants
+
+            const conversations = await Conversation.find({
+                participants: userId
+            })
+
+            .sort({updatedAt: -1})
+            .populate({
+                path: "lastMessage",
+                select: "content senderId attachment createdAt"
+            })
+            .populate({
+                path: "participants",
+                select: "name avataremail",
+            })
+            .lean();
+
+            socket.emit("getConversations", {
+                success: true,
+                data: conversations,
+            });
+
+
+        }catch(error: any){
+            console.log("getConversations error", error);
+            socket.emit("getConversations",{
+                success: false,
+                msg: "Failed to fetch conversation",
+            });
+        }
+    })
+
     socket.on("newConversation", async (data) => {
         console.log("newConversation event: ", data);
 
