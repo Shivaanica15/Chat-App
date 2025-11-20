@@ -11,7 +11,7 @@ export const login = async (
             email,
             password
         })
-        return response.data;
+        return { token: response.data.token };
 
     }catch(error:any){
         console.log("got error: ", error);
@@ -34,7 +34,7 @@ export const register = async (
             name,
             avatar,
         })
-        return response.data;
+        return { token: response.data.token };
 
     }catch(error:any){
         console.log("got error: ", error);

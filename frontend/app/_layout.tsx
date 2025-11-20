@@ -11,7 +11,7 @@ const StackLayout = () => {
             options={{ presentation: "modal" }}
         />
         <Stack.Screen
-            name="(main)/newConversationModal"
+            name="(main)/newConversationModel"
             options={{ presentation: "modal" }}
         />
     </Stack>

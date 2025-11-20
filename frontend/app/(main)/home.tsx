@@ -45,7 +45,7 @@ const Home = () => {
 
     const newConversationHandler = (res: ResponseProps) =>{
         if(res.success && res.data?.isNew){
-            setConversations((prev)=> [...prev, resizeBy.data]);
+            setConversations((prev)=> [...prev, res.data]);
         }
     }
 

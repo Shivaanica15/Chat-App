@@ -17,9 +17,17 @@ const BackButton = ({
 
     const router = useRouter();
 
+    const handlePress = () => {
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.replace("/(auth)/welcome");
+        }
+    };
+
     return (
         <TouchableOpacity 
-        onPress={() => router.back()} 
+        onPress={handlePress} 
         style={[styles.button, style]}
         >
             <CaretLeftIcon size={verticalScale(iconSize)} color={color} weight="bold" />
