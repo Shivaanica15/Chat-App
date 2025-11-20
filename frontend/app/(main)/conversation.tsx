@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper';
-import { colors, spacingY } from '@/constants/theme';
+import { colors, radius, spacingX, spacingY } from '@/constants/theme';
 import Typo from '@/components/Typo';
 import { useLocalSearchParams } from 'expo-router';
 import { useAuth } from '@/contexts/authContext';
 import Avatar from '@/components/Avatar';
-import { verticalScale } from '@/utils/styling';
+import { scale, verticalScale } from '@/utils/styling';
 
 const Conversation = () => {
 
@@ -35,7 +35,7 @@ const Conversation = () => {
     let conversationName = isDirect && otherParticipant ? otherParticipant.name : name;
 
     return (
-        <ScreenWrapper>
+        <ScreenWrapper showPattern={true} bgOpacity={0.5}>
             <Typo color={colors.white}>Conversation</Typo>
         </ScreenWrapper>
     )
@@ -44,6 +44,48 @@ const Conversation = () => {
 export default Conversation
 
 const styles = StyleSheet.create({
+    container:{
+        flex: 1,
+    },
+    header:{
+        paddingHorizontal: spacingX._15,
+        paddingTop: spacingY._10,
+        paddingBottom: spacingY._15
+    },
+    hearderLeft:{
+        flexDirection: "row",
+        alignItems:"center",
+        gap: spacingX._12,
+    },
+    inputRightIcon:{
+        position: "absolute",
+        right: scale(10),
+        top: verticalScale(15),
+        paddingLeft:spacingX._12,
+        borderLeftWidth: 1.5,
+        borderLeftColor: colors.neutral300
+    },
+    selectedFile:{
+        position: "absolute",
+        height: verticalScale(38),
+        width: verticalScale(38),
+        borderRadius: radius.full,
+        alignSelf: "center"
+    },
+    content:{
+        flex:1,
+        backgroundColor: colors.white,
+        borderTopLeftRadius: radius._50,
+        borderTopRightRadius: radius._50,
+        borderCurve: "continuous",
+        overflow: "hidden",
+        paddingHorizontal: spacingX._15,
+    },
+    inputIcon:{
+        backgroundColor: colors.primary,
+        borderRadius: radius.full,
+        padding: 8,
+    },
     footer:{
         paddingTop: spacingY._7,
         paddingBottom: verticalScale(22)
@@ -61,5 +103,5 @@ const styles = StyleSheet.create({
         borderRadius: radius.full,
         padding: 8,
     },
-    
+
 })
