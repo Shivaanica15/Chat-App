@@ -163,12 +163,53 @@ export function registerChatEvents (io: SocketIOServer, socket: Socket){
             });
 
         }catch(error){
+            console.log("newMessage error: ", error);
             socket.emit("newMessage",{
                 success: false,
                 msg: "Failed to send message",
             });
         }
         
-    })
+    });
+
+    socket.on("getMessages", async (data: { conversationId: string }) => {
+    console.log('getMessages event: ', data);
+    try {
+        const messages = await Message.find({
+            conversationId: data.conversationId,
+        })
+            .sort({ createdAt: -1 }) // newest first
+            .populate<{ senderId: { _id: string; name: string; avatar: string } }>({
+                path: "senderId",
+                select: "name avatar",
+            })
+            .lean();
+
+            const messagesWithSender = messages.map(message=>({
+                ...message,
+                id: message._id,
+                sender:{
+                    id: message.senderId._id,
+                    name: message.senderId.name,
+                    avatar: message.senderId.avatar,
+                }
+            }));
+
+            socket.emit("getMessages",{
+                success: true,
+                data: messagesWithSender,
+            } )
+
+    } catch (error) {
+        console.log("getMessages error: ", error);
+        socket.emit("getMessages", {
+            success: false,
+            msg: "Failed to fetch message",
+        });
+    }
+});
+
+
+
 
 }

@@ -30,11 +30,28 @@ const Home = () => {
     useEffect(() =>{
         getConversations(processConversations);
         newConversation(newConversationHandler);
+        newMessage(newMessageHandler);
 
         return ()=>{
             getConversations(processConversations, true);
+            newConversation(newConversationHandler, true);
+            newMessage(newMessageHandler, true);
         }
-    },[])
+    },[]);
+
+    const newMessageHandler = (res: ResponseProps) =>{
+        if(res.success){
+            let conversationId = res.data.conversationId;
+            setConversations((prev)=>{
+                let updatedCoversations = prev.map((item)=>{
+                    if(item._id == conversationId) item.lastMessage = resizeBy.data;
+                    return item;
+                });
+
+                return updatedCoversations;
+            })
+        }
+    }
 
     const processConversations = (res: ResponseProps) =>{
         // console.log('res: ', res);

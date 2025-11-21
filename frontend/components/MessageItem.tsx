@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React from 'react'
 import { MessageProps } from "@/types";
 import { useAuth } from "@/contexts/authContext";
@@ -6,13 +6,18 @@ import { verticalScale } from "@/utils/styling";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import Avatar from "./Avatar";
 import Typo from "./Typo";
+import moment from "moment";   // ✅ FIXED: missing import
 
 const MessageItem = ({
     item, isDirect
 }: {item: MessageProps, isDirect: boolean}) => {
 
     const {user: currentUser} = useAuth();
-    const isMe = item.isMe;
+    const isMe = currentUser?.id == item?.sender?.id;
+
+    const formattedDate = moment(item.createdAt).isSame(moment(), "day")?
+    moment(item.createdAt).format("h:mm A"):
+    moment(item.createdAt).format("MMM D, h:mm A");
 
     return (
         <View
@@ -20,38 +25,44 @@ const MessageItem = ({
                 styles.messageContainer,
                 isMe ? styles.myMessage : styles.theirMessage,
             ]}
+        >
+            {!isMe && !isDirect && (
+                <Avatar size={30} uri={item?.sender?.avatar} style={styles.theirMessage} />
+            )}
+
+            <View 
+                style={[
+                    styles.messageBubble,
+                    isMe ? styles.myBubble : styles.theirMessage,
+                ]}
             >
+
                 {!isMe && !isDirect && (
-                    <Avatar size={30} uri={null} style={styles.theirMessage} />
+                    <Typo color={colors.neutral900} fontWeight={"600"} size={13}>
+                        {item.sender.name}
+                    </Typo>
                 )}
 
-                <View 
-                    style={[
-                        styles.messageBubble,
-                        isMe ? styles.myBubble :styles.theirMessage,
-                    ]}
-                    >
-                        {
-                            !isMe && !isDirect && (
-                                <Typo color={colors.neutral900} fontWeight={"600"} size={13}>
-                            {item.sender.name}
-                        </Typo>
-                            )
-                        }
+                {item.attachement && (  /* ✅ FIXED: correct property name */
+                    <Image
+                        source={{ uri: item.attachement }}  /* ✅ FIXED: correct RN format */
+                        style={styles.attachment}
+                    />
+                )}
 
-                        {item.content && <Typo size={15}>{item.content}</Typo>}
+                {item.content && <Typo size={15}>{item.content}</Typo>}
 
-                        <Typo
-                            style={{ alignSelf: "flex-end"}}
-                            size={11}
-                            fontWeight={"500"}
-                            color={colors.neutral600}
-                            >
-                                {item.createdAt}
-                            </Typo>
-                        
-                    </View>
+                <Typo
+                    style={{ alignSelf: "flex-end"}}
+                    size={11}
+                    fontWeight={"500"}
+                    color={colors.neutral600}
+                >
+                    {formattedDate}
+                </Typo>
+
             </View>
+        </View>
     )
 }
 
