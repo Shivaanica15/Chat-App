@@ -1,6 +1,11 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import Conversation from "../models/Conversation";
 import { error } from "console";
+import { Message } from "../models/Message";
+
+
+
+
 
 
 export function registerChatEvents (io: SocketIOServer, socket: Socket){
@@ -124,5 +129,46 @@ export function registerChatEvents (io: SocketIOServer, socket: Socket){
             });
         }
     });
+
+    socket.on("newMessage", async (data)=>{
+        console.log('newMessage event: ', data);
+        try{
+            const message = await Message.create({
+                conversationId: data.conversationId,
+                senderId: data.sender.id,
+                content: data.content,
+                attachment: data.attachment
+            });
+
+            io.to(data.conversationId).emit("newConversation", {
+                success: true,
+                data: {
+                    id: message._id,
+                    content: data.content,
+                    sender:{
+                        id: data.sender.id,
+                        name: data.sender.name,
+                        avatar: data.sender.avatar,
+                    },
+                    attachment: data.attachment,
+                    createdAt: new Date().toISOString(),
+                    conversationId: data.conversationId,
+                },
+            });
+
+            // update conversation's last message
+
+            await Conversation.findByIdAndUpdate(data.conversationId,{
+                lastMessage: message.id,
+            });
+
+        }catch(error){
+            socket.emit("newMessage",{
+                success: false,
+                msg: "Failed to send message",
+            });
+        }
+        
+    })
 
 }
